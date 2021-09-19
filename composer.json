@@ -1,0 +1,32 @@
+{
+    "name": "leafs/session",
+    "description": "Leaf PHP session + flash modules",
+    "keywords": [
+        "session",
+        "http",
+        "flash",
+        "leaf",
+        "php",
+        "framework"
+    ],
+    "homepage": "https://leafphp.netlify.app/#/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Darko",
+            "email": "mickdd22@gmail.com",
+            "homepage": "https://mychi.netlify.app",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Leaf\\": "src"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "leafs/anchor": "^1.0"
+    }
+}
