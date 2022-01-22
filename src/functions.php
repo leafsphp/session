@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('session')) {
+if (!function_exists('session') && class_exists('Leaf\App')) {
     /**
      * Return session data/object or set session data
      *
@@ -10,7 +10,11 @@ if (!function_exists('session')) {
     function session($key = null, $value = null)
     {
         if (!$key && !$value) {
-            return new \Leaf\Http\Session();
+            if (!(\Leaf\Config::get("session.instance"))) {
+                \Leaf\Config::set("session.instance", new \Leaf\Http\Session());
+            }
+
+            return \Leaf\Config::get("session.instance");
         }
 
         if (!$value && ($key && is_string($key))) {
@@ -25,7 +29,7 @@ if (!function_exists('session')) {
     }
 }
 
-if (!function_exists('flash')) {
+if (!function_exists('flash') && class_exists('Leaf\App')) {
     /**
      * Return flash data/object or set flash data
      *
@@ -35,7 +39,11 @@ if (!function_exists('flash')) {
     function flash($key = null, $value = null)
     {
         if (!$key && !$value) {
-            return new \Leaf\Flash();
+            if (!(\Leaf\Config::get("flash.instance"))) {
+                \Leaf\Config::set("flash.instance", new \Leaf\Flash());
+            }
+
+            return \Leaf\Config::get("flash.instance");
         }
 
         if (!$value && is_string($key)) {
