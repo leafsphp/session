@@ -74,6 +74,7 @@ class Session
     public static function body()
     {
         static::start();
+
         return $_SESSION;
     }
 
@@ -188,6 +189,7 @@ class Session
     public static function regenerate($clearData = false)
     {
         session::start();
+
         return session_regenerate_id($clearData);
     }
 
@@ -199,6 +201,7 @@ class Session
     public static function encode(): string
     {
         static::start();
+
         return session_encode();
     }
 
@@ -210,6 +213,7 @@ class Session
     public static function decode($data)
     {
         static::start();
+
         return session_decode($data);
     }
 

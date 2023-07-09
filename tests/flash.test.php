@@ -30,4 +30,3 @@ test('multiple values can be flashed to session', function () {
     expect($flash->display())->toBe($message);
     expect($flash->display('message2'))->toBe($message2);
 });
-

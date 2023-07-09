@@ -16,7 +16,7 @@ test('multiple values can be set at once', function () {
     $session = new \Leaf\Http\Session();
     $session->set([
         'name' => $name,
-        'age' => $age
+        'age' => $age,
     ]);
 
     expect($_SESSION['name'] ?? null)->toBe($name);
