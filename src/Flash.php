@@ -42,7 +42,10 @@ class Flash
             $key = static::$config['default'];
         }
 
-        Session::set(static::$config['key'], [$key => $message]);
+        Session::set(static::$config['key'], array_merge(
+            Session::get(static::$config['key']) ?? [],
+            [$key => $message]
+        ));
     }
 
     /**
