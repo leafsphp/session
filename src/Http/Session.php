@@ -2,249 +2,228 @@
 
 namespace Leaf\Http;
 
+use Leaf\Anchor;
+
 /**
  * Leaf Session
  * ----------------
- * App session management made simple with Leaf 
- * 
+ * App session management made simple with Leaf
+ *
  * @author Michael Darko
  * @since 1.5.0
  */
 class Session
 {
-	protected static $errorsArray = [];
+    /**
+     * Start a session if one isn't already started
+     */
+    public static function start()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+    }
 
-	public function __construct($start = true)
-	{
-		if ($start == true) session_start();
-	}
+    /**
+     * Get a session variable
+     *
+     * @param string|array $param The session variable to get
+     * @param mixed $default The default value to return if the requested value cannot be found
+     * @param bool $sanitize Sanitize the data before returning it?
+     *
+     * @return mixed
+     */
+    public static function get($param, $default = null, bool $sanitize = true)
+    {
+        static::start();
 
-	/**
-	 * Get a session variable
-	 *
-	 * @param string|array $param: The session variable to get
-	 *
-	 * @return mixed
-	 */
-	public static function get($param, bool $sanitize = true)
-	{
-		if (is_array($param)) {
-			$fields = [];
+        $data = Anchor::deepGetDot($_SESSION, $param);
 
-			foreach ($param as $item) {
-				$fields[$item] = static::get($item, $sanitize);
-			}
+        if ($sanitize) {
+            $data = Anchor::sanitize($data);
+        }
 
-			return $fields;
-		}
+        return $data ?? $default;
+    }
 
-		if (!isset($_SESSION[$param])) {
-			return null;
-		}
+    /**
+     * Returns the requested value and removes it from the session
+     *
+     * This is identical to calling `get` first and then `unset` for the same key
+     *
+     * @param string $key the key to retrieve and remove the value for
+     * @param mixed $defaultValue the default value to return if the requested value cannot be found
+     *
+     * @return mixed the requested value or the default value
+     */
+    public static function retrieve($key, $default = null, $sanitize = false)
+    {
+        static::start();
 
-		$data = $_SESSION[$param];
+        $value = static::get($key, $default, $sanitize);
+        static::unsetSessionVar($key);
 
-		if ($sanitize) {
-			$data = \Leaf\Anchor::sanitize($data);
-		}
+        return $value;
+    }
 
-		return $data;
-	}
+    /**
+     * Get all session variables as an array
+     *
+     * @return array array of session variables
+     */
+    public static function body()
+    {
+        static::start();
+        return $_SESSION;
+    }
 
-	/**
-	 * Returns the requested value and removes it from the session
-	 *
-	 * This is identical to calling `get` first and then `unset` for the same key
-	 *
-	 * @param string $key the key to retrieve and remove the value for
-	 * @param mixed $defaultValue the default value to return if the requested value cannot be found
-	 * 
-	 * @return mixed the requested value or the default value
-	 */
-	public static function retrieve($key, $defaultValue = null)
-	{
-		if (!isset($_SESSION[$key])) return $defaultValue;
+    /**
+     * Set a new session variable
+     *
+     * @param mixed $key: The session variable key
+     * @param string $value: The session variable value
+     *
+     * @return void
+     */
+    public static function set($key, $value = null)
+    {
+        static::start();
+        $_SESSION = Anchor::deepSetDot($_SESSION, $key, $value);
+    }
 
-		$value = static::get($key);
-		static::unset_session_var($key);
+    /**
+     * Remove a session variable
+     */
+    protected static function unsetSessionVar($key)
+    {
+        unset($_SESSION[$key]);
+    }
 
-		return $value;
-	}
+    /**
+     * Remove a session variable
+     *
+     * @param string $key: The session variable key
+     */
+    public static function unset($key)
+    {
+        static::start();
 
-	/**
-	 * Get all session variables as an array
-	 *
-	 * @return array|null array of session variables
-	 */
-	public static function body()
-	{
-		if (!isset($_SESSION)) {
-			static::$errorsArray["session"] = "No active session found!";
-			return false;
-		}
+        if (is_array($key)) {
+            foreach ($key as $field) {
+                static::unsetSessionVar($field);
+            }
+        } else {
+            static::unsetSessionVar($key);
+        }
+    }
 
-		$body = [];
-		foreach ($_SESSION as $key => $value) {
-			$body[$key] = $value;
-		}
-		return $body;
-	}
+    /**
+     * Alias for unset
+     */
+    public static function delete($key)
+    {
+        static::unset($key);
+    }
 
-	/**
-	 * Set a new session variable
-	 *
-	 * @param string|array $key: The session variable key
-	 * @param string $value: The session variable value
-	 *
-	 * @return void
-	 */
-	public static function set($key, $value = null)
-	{
-		if (is_array($key)) {
-			foreach ($key as $name => $val) {
-				static::set($name, $val);
-			}
-		} else {
-			$_SESSION[$key] = $value;
-		}
-	}
+    /**
+     * Remove all session variables
+     */
+    public static function clear()
+    {
+        static::start();
+        session_unset();
+    }
 
-	/**
-	 * Remove a session variable
-	 */
-	protected static function unset_session_var($key)
-	{
-		unset($_SESSION[$key]);
-	}
+    /**
+     * End the current session
+     */
+    public static function destroy()
+    {
+        static::start();
+        session_destroy();
+    }
 
-	/**
-	 * Remove a session variable
-	 *
-	 * @param string $key: The session variable key
-	 *
-	 * @return void|false
-	 */
-	public static function unset($key)
-	{
-		if (!isset($_SESSION)) {
-			static::$errorsArray["session"] = "No active session found!";
-			return false;
-		}
+    /**
+     * Reset the current session
+     *
+     * @param string $id id to overwrite the default
+     */
+    public static function reset($id = null)
+    {
+        static::start();
 
-		if (is_array($key)) {
-			foreach ($key as $field) {
-				static::unset_session_var($field);
-			}
-		} else {
-			static::unset_session_var($key);
-		}
-	}
+        session_reset();
+        static::id($id);
+    }
 
-	/**
-	 * End the current session
-	 *
-	 * @return void
-	 */
-	public static function destroy()
-	{
-		if (!isset($_SESSION)) {
-			static::$errorsArray["session"] = "No active session found!";
-			return false;
-		}
-		session_destroy();
-	}
+    /**
+     * Get the current session id: will set the session id if none is found
+     *
+     * @param string $id id to override the default
+     *
+     * @return string
+     */
+    public static function id($id = null)
+    {
+        static::start();
 
-	/**
-	 * Reset the current session
-	 * 
-	 * @param string $id: id to override the default
-	 * 
-	 * @return false|void
-	 */
-	public static function reset($id = null)
-	{
-		if (!isset($_SESSION)) {
-			static::$errorsArray["session"] = "No active session found!";
-			return false;
-		}
+        if (!$id) {
+            return session_id();
+        }
 
-		session_reset();
-		static::set("id", $id ?? session_id());
-	}
+        session_id($id);
+        static::set('id', $id);
 
-	/**
-	 * Get the current session id: will set the session id if none is found
-	 *
-	 * @param string [optional] $id: id to override the default
-	 *
-	 * @return string
-	 */
-	public static function id($id = null)
-	{
-		if (!isset($_SESSION['id'])) static::set("id", $id ?? session_id());
-		return static::get("id");
-	}
+        return $id;
+    }
 
-	/**
-	 * Regenerate the session id/Generate a new session if none exists
-	 * 
-	 * @param bool $clearData: Clear all session data?
-	 * 
-	 * @return bool True on success, false on failure
-	 */
-	public static function regenerate($clearData = false)
-	{
-		if (!isset($_SESSION)) {
-			session_start();
-			static::id();
-			return true;
-		}
+    /**
+     * Regenerate the session id/Generate a new session if none exists
+     *
+     * @param bool $clearData Clear all session data?
+     *
+     * @return bool True on success, false on failure
+     */
+    public static function regenerate($clearData = false)
+    {
+        session::start();
+        return session_regenerate_id($clearData);
+    }
 
-		return session_regenerate_id($clearData);
-	}
+    /**
+     * Encodes the current session data as a string
+     *
+     * @return string
+     */
+    public static function encode(): string
+    {
+        static::start();
+        return session_encode();
+    }
 
-	/**
-	 * Encodes the current session data as a string
-	 * 
-	 * @return string
-	 */
-	public static function encode(): string
-	{
-		return session_encode();
-	}
+    /**
+     * Decodes session data from a string
+     *
+     * @return bool
+     */
+    public static function decode($data)
+    {
+        static::start();
+        return session_decode($data);
+    }
 
-	/**
-	 * Decodes session data from a string
-	 * 
-	 * @return bool
-	 */
-	public static function decode($data)
-	{
-		return session_decode($data);
-	}
+    // -------------- flash messages ---------------
+    /**
+     * Set or get a flash message
+     *
+     * @param string|null $message The flash message
+     */
+    public static function flash($message = null)
+    {
+        if (!$message) {
+            return \Leaf\Flash::display();
+        }
 
-	/**
-	 * Return errors if any
-	 * 
-	 * @return array
-	 */
-	public static function errors(): array
-	{
-		return static::$errorsArray;
-	}
-
-	// -------------- flash messages ---------------
-	/**
-	 * Set or get a flash message
-	 * 
-	 * @param string|null $message The flash message
-	 */
-	public static function flash($message = null)
-	{
-		if (!$message) {
-			return \Leaf\Flash::display();
-		}
-
-		\Leaf\Flash::set($message);
-	}
+        \Leaf\Flash::set($message);
+    }
 };
