@@ -1,55 +1,33 @@
 <?php
 
-if (!function_exists('session') && class_exists('Leaf\App')) {
+if (!function_exists('session') && class_exists('Leaf\Config')) {
     /**
-     * Return session data/object or set session data
+     * Return session object
      *
-     * @param string|null $key — The session data to set/get
-     * @param mixed $key — The data to set
+     * @return \Leaf\Http\Session
      */
-    function session($key = null, $value = null)
+    function session()
     {
-        if (!$key && !$value) {
-            if (!(\Leaf\Config::get("session.instance"))) {
-                \Leaf\Config::set("session.instance", new \Leaf\Http\Session());
-            }
-
-            return \Leaf\Config::get("session.instance");
+        if (!(\Leaf\Config::get('session.instance'))) {
+            \Leaf\Config::set('session.instance', new \Leaf\Http\Session());
         }
 
-        if (!$value && ($key && is_string($key))) {
-            return \Leaf\Http\Session::get($key);
-        }
-
-        if (!$value && ($key && is_array($key))) {
-            return \Leaf\Http\Session::set($key);
-        }
-
-        return \Leaf\Http\Session::set($key, $value);
+        return \Leaf\Config::get('session.instance');
     }
 }
 
-if (!function_exists('flash') && class_exists('Leaf\App')) {
+if (!function_exists('flash') && class_exists('Leaf\Config')) {
     /**
      * Return flash data/object or set flash data
      *
-     * @param string|null $key — The flash data to set/get
-     * @param mixed $key — The data to set
+     * @return \Leaf\Flash
      */
-    function flash($key = null, $value = null)
+    function flash()
     {
-        if (!$key && !$value) {
-            if (!(\Leaf\Config::get("flash.instance"))) {
-                \Leaf\Config::set("flash.instance", new \Leaf\Flash());
-            }
-
-            return \Leaf\Config::get("flash.instance");
+        if (!(\Leaf\Config::get('flash.instance'))) {
+            \Leaf\Config::set('flash.instance', new \Leaf\Flash());
         }
 
-        if (!$value && is_string($key)) {
-            return \Leaf\Flash::display($key);
-        }
-
-        return \Leaf\Flash::set($key, $value);
+        return \Leaf\Config::get('flash.instance');
     }
 }
