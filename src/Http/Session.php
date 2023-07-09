@@ -96,7 +96,8 @@ class Session
      */
     protected static function unsetSessionVar($key)
     {
-        unset($_SESSION[$key]);
+        static::start();
+        $_SESSION = Anchor::deepUnsetDot($_SESSION, $key);
     }
 
     /**
