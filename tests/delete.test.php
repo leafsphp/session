@@ -36,7 +36,5 @@ test('values can be removed from session using dot notation', function () {
 
     $session->unset('user.name');
 
-    echo json_encode($_SESSION);
-
     expect($session->get('user.name'))->toBe(null);
 });
