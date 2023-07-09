@@ -1,7 +1,7 @@
 <!-- markdownlint-disable no-inline-html -->
 <p align="center">
   <br><br>
-  <img src="https://leafphp.netlify.app/assets/img/leaf3-logo.png" height="100"/>
+  <img src="https://leafphp.dev/logo-circle.png" height="100"/>
   <h1 align="center">Leaf Session Module</h1>
   <br><br>
 </p>
@@ -16,12 +16,23 @@ Leaf's core session functionality packaged as a serve-yourself module.
 
 ## Installation
 
-You can easily install Leaf using [Composer](https://getcomposer.org/).
+You can easily install Leaf using the [Leaf CLI](https://cli.leafphp.dev):
+
+```bash
+leaf install session
+```
+
+Or with [Composer](https://getcomposer.org/).
 
 ```bash
 composer require leafs/session
 ```
 
-## View Leaf's docs [here](https://leafphp.netlify.app/#/)
+## Usage
 
-Built with ❤ by [**Mychi Darko**](https://mychi.netlify.app)
+```php
+session()->set('name', 'Leaf PHP');
+session()->get('name');
+```
+
+Check the full documentation [here](https://leafphp.dev/modules/session/).
