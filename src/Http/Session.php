@@ -234,7 +234,7 @@ class Session
 
     /**
      * Has Session Item
-     * 
+     *
      * @return bool
      */
     public static function has($key)
