@@ -231,4 +231,14 @@ class Session
 
         \Leaf\Flash::set($message);
     }
+
+    /**
+     * Has Session Item
+     * 
+     * @return bool
+     */
+    public static function has($key)
+    {
+        return static::get($key) !== null;
+    }
 };
