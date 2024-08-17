@@ -133,6 +133,7 @@ class Session
     public static function clear()
     {
         static::start();
+
         return session_unset();
     }
 
