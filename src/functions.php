@@ -8,11 +8,13 @@ if (!function_exists('session') && class_exists('Leaf\Config')) {
      */
     function session()
     {
-        if (!(\Leaf\Config::get('session.instance'))) {
-            \Leaf\Config::set('session.instance', new \Leaf\Http\Session());
+        if (!(\Leaf\Config::getStatic('session'))) {
+            \Leaf\Config::singleton('session', function () {
+                return new \Leaf\Http\Session();
+            });
         }
 
-        return \Leaf\Config::get('session.instance');
+        return \Leaf\Config::get('session');
     }
 }
 
@@ -24,10 +26,12 @@ if (!function_exists('flash') && class_exists('Leaf\Config')) {
      */
     function flash()
     {
-        if (!(\Leaf\Config::get('flash.instance'))) {
-            \Leaf\Config::set('flash.instance', new \Leaf\Flash());
+        if (!(\Leaf\Config::getStatic('flash'))) {
+            \Leaf\Config::singleton('flash', function () {
+                return new \Leaf\Flash();
+            });
         }
 
-        return \Leaf\Config::get('flash.instance');
+        return \Leaf\Config::get('flash');
     }
 }
