@@ -71,6 +71,14 @@ class Flash
     }
 
     /**
+     * Manually remove set flash message
+     */
+    public static function remove(): void
+    {
+        return static::unset('default');
+    }
+
+    /**
      * Get the flash array
      *
      * @param string|null $key The key of message to get
