@@ -137,6 +137,14 @@ class Session
     }
 
     /**
+     * Remove a session variable
+     */
+    public static function remove($key)
+    {
+        static::unset($key);
+    }
+
+    /**
      * Remove all session variables
      */
     public static function clear()
@@ -163,7 +171,6 @@ class Session
     public static function reset($id = null)
     {
         static::start();
-
         session_reset();
         static::id($id);
     }
@@ -184,6 +191,7 @@ class Session
         }
 
         session_id($id);
+
         static::set('id', $id);
 
         return $id;
