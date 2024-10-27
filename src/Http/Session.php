@@ -91,7 +91,7 @@ class Session
      * Set a new session variable
      *
      * @param mixed $key: The session variable key
-     * @param string $value: The session variable value
+     * @param mixed $value: The session variable value
      *
      * @return void
      */
