@@ -75,7 +75,7 @@ class Flash
      */
     public static function remove(): void
     {
-        return static::unset('default');
+        static::unset('default');
     }
 
     /**
