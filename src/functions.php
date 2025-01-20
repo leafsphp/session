@@ -14,7 +14,7 @@ if (!function_exists('session') && class_exists('Leaf\Config')) {
             });
         }
 
-        return new \Leaf\Http\Session();
+        return \Leaf\Config::get('session');
     }
 }
 
