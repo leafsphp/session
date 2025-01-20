@@ -53,7 +53,7 @@ class Session
      *
      * @param string $key the key to retrieve and remove the value for
      * @param mixed $defaultValue the default value to return if the requested value cannot be found
-     * @param boolean $sanitize Whether to sanitize the returned value
+     * @param bool $sanitize Whether to sanitize the returned value
      *
      * @return mixed the requested value or the default value
      */
