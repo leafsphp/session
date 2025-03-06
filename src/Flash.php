@@ -53,7 +53,7 @@ class Flash
      *
      * @param string|null $key The key of message to remove
      */
-    public static function unset(string $key = null)
+    public static function unset(?string $key = null)
     {
         $data = Session::get(static::$config['key'], null, false);
 
@@ -84,7 +84,7 @@ class Flash
      * @param string|null $key The key of message to get
      * @return string|array
      */
-    protected static function get(string $key = null)
+    protected static function get(?string $key = null)
     {
         if (!$key) {
             return Session::get(static::$config['key']);
