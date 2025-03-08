@@ -8,13 +8,13 @@ if (!function_exists('session') && class_exists('Leaf\Config')) {
      */
     function session()
     {
-        if (!(\Leaf\Config::getStatic('session'))) {
-            \Leaf\Config::singleton('session', function () {
+        if (!(\Leaf\Config::getStatic('session.instance'))) {
+            \Leaf\Config::singleton('session.instance', function () {
                 return new \Leaf\Http\Session();
             });
         }
 
-        return \Leaf\Config::get('session');
+        return \Leaf\Config::get('session.instance');
     }
 }
 
