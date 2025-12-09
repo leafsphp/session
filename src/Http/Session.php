@@ -102,6 +102,31 @@ class Session
     }
 
     /**
+     * Append to data in session
+     *
+     * @param mixed $key The session variable key
+     * @param mixed $value The session variable value
+     *
+     * @return void
+     */
+    public static function append($key, $value = null)
+    {
+        static::start();
+
+        $data = static::get($key);
+
+        if (!$data) {
+            $data = $value;
+        } elseif (\is_array($data)) {
+            $data[] = $value;
+        } else {
+            $data .= $value;
+        }
+
+        $_SESSION = Anchor::deepSetDot($_SESSION, $key, $data);
+    }
+
+    /**
      * Remove a session variable
      */
     protected static function unsetSessionVar($key)
@@ -259,4 +284,4 @@ class Session
     {
         return static::get($key) !== null;
     }
-};
+}
