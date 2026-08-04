@@ -113,7 +113,7 @@ class Session
     {
         static::start();
 
-        $data = static::get($key);
+        $data = static::get($key, null, false);
 
         if (!$data) {
             $data = $value;
@@ -209,15 +209,18 @@ class Session
      */
     public static function id($id = null)
     {
-        static::start();
-
         if (!$id) {
+            static::start();
+
             return session_id();
         }
 
-        session_id($id);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
 
-        static::set('id', $id);
+        session_id($id);
+        static::start();
 
         return $id;
     }
@@ -231,7 +234,7 @@ class Session
      */
     public static function regenerate($clearData = false)
     {
-        session::start();
+        static::start();
 
         return session_regenerate_id($clearData);
     }
