@@ -43,7 +43,7 @@ class Flash
         }
 
         Session::set(static::$config['key'], array_merge(
-            Session::get(static::$config['key']) ?? [],
+            Session::get(static::$config['key'], null, false) ?? [],
             [$key => $message]
         ));
     }
@@ -95,7 +95,9 @@ class Flash
         }
 
         $item = null;
-        $items = Session::get(static::$config['key'], false);
+        // third arg is the sanitize flag; the old call passed false as the
+        // DEFAULT and left sanitization on, escaping flashed form data
+        $items = Session::get(static::$config['key'], null, false);
 
         if (isset($items[$key])) {
             $item = $items[$key];
