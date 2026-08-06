@@ -71,11 +71,13 @@ class Flash
     }
 
     /**
-     * Manually remove set flash message
+     * Manually remove a flash message without displaying it
+     *
+     * @param string|null $key The item to remove. Defaults to the default flash message.
      */
-    public static function remove(): void
+    public static function remove(?string $key = null): void
     {
-        static::unset('default');
+        static::unset($key ?? 'default');
     }
 
     /**
