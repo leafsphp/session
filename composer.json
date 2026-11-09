@@ -32,7 +32,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
-        "leafs/anchor": "^5.0"
+        "leafs/anchor": "^1.6 || ^5.0"
     },
     "require-dev": {
         "pestphp/pest": "*",
@@ -52,5 +52,8 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "conflict": {
+        "leafs/auth": "<5.1.6"
     }
 }
